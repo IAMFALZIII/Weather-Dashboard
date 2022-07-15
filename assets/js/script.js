@@ -42,5 +42,38 @@ function currentWeather(city) {
         var iconURL = "https://openweathermap.org/img/wn/"+ weatherIcon +"@2x.png";
         var date = new Date(response.dt*1000).toLocaleDateString();
 
-        $(currentCity).html(response.name ="("+date+")" + "<img src="+iconURL+">")})
-    }
+        $(currentCity).html(response.name ="("+date+")" + "<img src="+iconURL+">")
+
+        var tempF = (response.main.temp - 273.15) * 1.80 + 32;
+        $(currentTemperature).html((tempF).toFixed(2)+"&#8457");
+        //* Display Humidity //
+        $(currentHumidity).html(response.main.humidity+"%");
+        //* Display wind speed and had it converted to MPH //
+        var ws=response.wind.speed;
+        var windsmph=(ws*2.237).toFixed(1);
+        $(currentWSpeed).html(windsmph+"MPH");
+        
+        //*For UV Index //
+        UVIndex(response.coord.lon,response.coord.lat);
+        forecast(response.id);
+        if(response.cod==200){
+            sCity=JSON.parse(localStorage.getItem("cityname"));
+            console.log(sCity);
+            if (sCity==null){
+                sCity=[];
+                sCity.push(city.toUpperCase()
+                );
+                localStorage.setItem("cityname",JSON.stringify(sCity));
+                addToList(city);
+            }
+            else {
+                if(find(city)>0){
+                    sCity.push(city.toUpperCase());
+                    localStorage.setItem("cityname",JSON.stringify(sCity));
+                    addToList(city);
+                }
+            }
+        }
+
+    });
+}
