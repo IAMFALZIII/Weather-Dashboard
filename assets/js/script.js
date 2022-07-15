@@ -115,3 +115,47 @@ function forecast(cityid){
         
     });
 }
+
+function addToList(c){
+    var listEl= $("<li>"+c.toUpperCase()+"</li>");
+    $(listEl).attr("class","list-group-item");
+    $(listEl).attr("data-value",c.toUpperCase());
+    $(".list-group").append(listEl);
+}
+
+function invokePastSearch(event){
+    var liEl=event.target;
+    if (event.target.matches("li")){
+        city=liEl.textContent.trim();
+        currentWeather(city);
+    }
+
+}
+
+
+function loadlastCity(){
+    $("ul").empty();
+    var sCity = JSON.parse(localStorage.getItem("cityname"));
+    if(sCity!==null){
+        sCity=JSON.parse(localStorage.getItem("cityname"));
+        for(i=0; i<sCity.length;i++){
+            addToList(sCity[i]);
+        }
+        city=sCity[i-1];
+        currentWeather(city);
+    }
+
+}
+
+function clearHistory(event){
+    event.preventDefault();
+    sCity=[];
+    localStorage.removeItem("cityname");
+    document.location.reload();
+
+}
+
+$("#search-button").on("click",displayWeather);
+$(document).on("click",invokePastSearch);
+$(window).on("load",loadlastCity);
+$("#clear-history").on("click",clearHistory);
